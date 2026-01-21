@@ -81,3 +81,4 @@ To modify styling, edit `css/style.css`.
 - All functionality is client-side JavaScript
 - No build process or dependencies required
 
+

@@ -197,8 +197,16 @@ body {
 }
 
 .category-icon {
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-xs);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-xs);
+    color: var(--primary-color);
+    background-color: var(--bg-white);
 }
 
 .category-card h3 {
@@ -843,4 +851,5 @@ body {
         font-size: 1.5rem;
     }
 }
+
 
