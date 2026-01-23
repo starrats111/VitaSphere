@@ -1,5 +1,15 @@
 // Main JavaScript functionality
 
+// Convert title to URL-friendly slug
+function titleToSlug(title) {
+    return title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '') // Remove special characters
+        .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+        .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializePage();
@@ -14,9 +24,9 @@ function initializePage() {
     const search = params.get('search');
     
     if (path.includes('article.html')) {
-        const id = params.get('id');
-        if (id) {
-            displayArticle(parseInt(id));
+        const slug = params.get('slug');
+        if (slug) {
+            displayArticle(slug);
         }
     } else if (path.includes('about.html') || path.includes('contact.html')) {
         // Static pages, no special initialization needed
@@ -88,7 +98,7 @@ function displayFeaturedArticle() {
                     <span>${formatDate(featured.date)}</span>
                     <span>By ${featured.author}</span>
                 </div>
-                <a href="article.html?id=${featured.id}" class="read-more">Read More</a>
+                <a href="article.html?slug=${titleToSlug(featured.title)}" class="read-more">Read More</a>
             </div>
         </div>
     `;
@@ -133,7 +143,7 @@ function displayArticles(category = null, search = null) {
         articlesGrid.innerHTML = paginatedArticles.map(article => {
             const categoryName = categoryNames[article.category] || article.category;
             return `
-                <a href="article.html?id=${article.id}" class="article-card fade-in">
+                <a href="article.html?slug=${titleToSlug(article.title)}" class="article-card fade-in">
                     <img src="${article.image}" alt="${article.title}" class="article-image">
                     <div class="article-content">
                         <div class="article-category">${categoryName}</div>
@@ -193,8 +203,8 @@ function displayArticles(category = null, search = null) {
 }
 
 // Display single article
-function displayArticle(id) {
-    const article = blogArticles.find(a => a.id === id);
+function displayArticle(slug) {
+    const article = blogArticles.find(a => titleToSlug(a.title) === slug);
     if (!article) {
         document.body.innerHTML = '<h1>Article not found</h1><a href="index.html">Return to home</a>';
         return;
