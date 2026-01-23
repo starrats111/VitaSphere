@@ -23,7 +23,7 @@ function initializePage() {
     const category = params.get('category');
     const search = params.get('search');
     
-    if (path.includes('article.html')) {
+    if (path.includes('article') || path.includes('article.html')) {
         const slug = params.get('slug');
         if (slug) {
             displayArticle(slug);
@@ -205,14 +205,20 @@ function displayArticles(category = null, search = null) {
 // Display single article
 function displayArticle(slug) {
     // URLSearchParams.get() already decodes the parameter, so slug is already decoded
+    // Normalize slug: remove any leading/trailing whitespace
+    const normalizedSlug = slug.trim();
+    
     // Find article by matching slug
     const article = blogArticles.find(a => {
         const articleSlug = titleToSlug(a.title);
-        return articleSlug === slug;
+        return articleSlug === normalizedSlug;
     });
     
     if (!article) {
-        document.body.innerHTML = '<h1>Article not found</h1><a href="index.html">Return to home</a>';
+        console.error('Article not found for slug:', normalizedSlug);
+        console.log('Available slugs:', blogArticles.map(a => titleToSlug(a.title)));
+        const mainContent = document.getElementById('articleContent') || document.querySelector('main') || document.body;
+        mainContent.innerHTML = '<div class="container" style="padding: 3rem; text-align: center;"><h1>Article not found</h1><p>The article you are looking for could not be found.</p><a href="index.html" style="color: var(--primary-color); text-decoration: underline;">Return to home</a></div>';
         return;
     }
     
