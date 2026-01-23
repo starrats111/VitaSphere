@@ -98,7 +98,7 @@ function displayFeaturedArticle() {
                     <span>${formatDate(featured.date)}</span>
                     <span>By ${featured.author}</span>
                 </div>
-                <a href="article.html?slug=${titleToSlug(featured.title)}" class="read-more">Read More</a>
+                <a href="article.html?slug=${encodeURIComponent(titleToSlug(featured.title))}" class="read-more">Read More</a>
             </div>
         </div>
     `;
@@ -143,7 +143,7 @@ function displayArticles(category = null, search = null) {
         articlesGrid.innerHTML = paginatedArticles.map(article => {
             const categoryName = categoryNames[article.category] || article.category;
             return `
-                <a href="article.html?slug=${titleToSlug(article.title)}" class="article-card fade-in">
+                <a href="article.html?slug=${encodeURIComponent(titleToSlug(article.title))}" class="article-card fade-in">
                     <img src="${article.image}" alt="${article.title}" class="article-image">
                     <div class="article-content">
                         <div class="article-category">${categoryName}</div>
@@ -204,7 +204,13 @@ function displayArticles(category = null, search = null) {
 
 // Display single article
 function displayArticle(slug) {
-    const article = blogArticles.find(a => titleToSlug(a.title) === slug);
+    // URLSearchParams.get() already decodes the parameter, so slug is already decoded
+    // Find article by matching slug
+    const article = blogArticles.find(a => {
+        const articleSlug = titleToSlug(a.title);
+        return articleSlug === slug;
+    });
+    
     if (!article) {
         document.body.innerHTML = '<h1>Article not found</h1><a href="index.html">Return to home</a>';
         return;
